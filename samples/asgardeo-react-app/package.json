@@ -1,6 +1,6 @@
 {
     "name": "@asgardeo/react-app",
-    "version": "5.2.5",
+    "version": "5.2.6",
     "description": "React based sample SPA to demonstrate Asgardeo / WSO2 Identity Server Auth React SDK usage",
     "keywords": [
         "Asgardeo",
