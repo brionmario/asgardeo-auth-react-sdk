@@ -63,9 +63,9 @@ class AuthAPI {
      *
      * @param {Config} config - `dispatch` function from React Auth Context.
      */
-    public init(config: AuthClientConfig<Config>): Promise<boolean> {
+    public async init(config: AuthClientConfig<Config>): Promise<boolean> {
         console.log('Initializing:::', config);
-        return this._client.initialize(config);
+        return await this._client.initialize(config);
     }
     
     public async getConfigData(): Promise<AuthClientConfig<Config>> {
