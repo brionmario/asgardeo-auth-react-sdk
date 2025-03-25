@@ -76,7 +76,7 @@ const AuthProvider: FunctionComponent<PropsWithChildren<AuthProviderPropsInterfa
     const [ state, dispatch ] = useState<AuthStateInterface>(AuthClient.getState());
     const [ initialized, setInitialized ] = useState(false);
 
-    const config = useMemo(
+    const _config = useMemo(
         (): AuthReactConfig => ({ ...defaultConfig, ...passedConfig }), [ passedConfig ]
     );
 
@@ -91,6 +91,7 @@ const AuthProvider: FunctionComponent<PropsWithChildren<AuthProviderPropsInterfa
         }
     ): Promise<BasicUserInfo> => {
         try {
+            console.log('config', _config);
             setError(null);
             return await AuthClient.signIn(
                 dispatch,
@@ -148,11 +149,11 @@ const AuthProvider: FunctionComponent<PropsWithChildren<AuthProviderPropsInterfa
             return;
         }
         (async () => {
-            setInitialized(await AuthClient.init(config));
+            setInitialized(await AuthClient.init(_config));
             checkIsAuthenticated();
         })();
 
-    }, [ config ]);
+    }, [ _config ]);
 
     /**
      * Try signing in when the component is mounted.
@@ -189,7 +190,7 @@ const AuthProvider: FunctionComponent<PropsWithChildren<AuthProviderPropsInterfa
 
             // If `skipRedirectCallback` is not true, check if the URL has `code` and `session_state` params.
             // If so, initiate the sign in.
-            if (!config.skipRedirectCallback) {
+            if (!_config.skipRedirectCallback) {
                 let authParams: AuthParams = null;
                 if (getAuthParams && typeof getAuthParams === "function") {
                     authParams = await getAuthParams();
@@ -198,7 +199,7 @@ const AuthProvider: FunctionComponent<PropsWithChildren<AuthProviderPropsInterfa
                 const url = new URL(location.href);
 
                 if ((SPAUtils.hasAuthSearchParamsInURL()
-                    && new URL(url.origin + url.pathname).toString() === new URL(config?.signInRedirectURL).toString())
+                    && new URL(url.origin + url.pathname).toString() === new URL(_config?.signInRedirectURL).toString())
                     || authParams?.authorizationCode
                     || url.searchParams.get("error") )
                 {
@@ -222,11 +223,11 @@ const AuthProvider: FunctionComponent<PropsWithChildren<AuthProviderPropsInterfa
                 return;
             }
 
-            if (!config.disableAutoSignIn && await AuthClient.isSessionActive()) {
+            if (!_config.disableAutoSignIn && await AuthClient.isSessionActive()) {
                 signIn();
             }  
 
-            if (config.disableTrySignInSilently || isSignedOut) {
+            if (_config.disableTrySignInSilently || isSignedOut) {
                 dispatch({ ...state, isLoading: false });
 
                 return;
@@ -249,7 +250,7 @@ const AuthProvider: FunctionComponent<PropsWithChildren<AuthProviderPropsInterfa
                 });
         })();
 
-    }, [ config ]);
+    }, [ _config ]);
 
     /**
      * Check if the user is authenticated and update the state.isAuthenticated value.
