@@ -8,6 +8,6 @@
     "packages": [
         "lib"
     ],
-    "version": "5.2.11",
+    "version": "5.2.12",
     "useWorkspaces": true
 }
