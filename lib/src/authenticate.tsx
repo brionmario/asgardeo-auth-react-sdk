@@ -98,7 +98,7 @@ const AuthProvider: FunctionComponent<PropsWithChildren<AuthProviderPropsInterfa
         
         if (!___config || Object.keys(___config).length === 0) {
             console.log('Config not found in storage. Initializing...', _config);
-            setInitialized(await AuthClient.init(_config));
+            await AuthClient.init(_config);
         }
 
         try {
