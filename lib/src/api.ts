@@ -29,8 +29,8 @@ import {
     HttpResponse,
     OIDCEndpoints,
     SignInConfig
-} from "@asgardeo/auth-spa";
-import { SPACustomGrantConfig } from "@asgardeo/auth-spa/src/models/request-custom-grant";
+} from "@brionmario-experimental/asgardeo-auth-spa";
+import { SPACustomGrantConfig } from "@brionmario-experimental/asgardeo-auth-spa/src/models/request-custom-grant";
 import { AuthStateInterface } from "./models";
 
 class AuthAPI {

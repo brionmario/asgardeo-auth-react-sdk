@@ -31,7 +31,7 @@ import {
     HttpResponse,
     OIDCEndpoints,
     SignInConfig
-} from "@asgardeo/auth-spa";
+} from "@brionmario-experimental/asgardeo-auth-spa";
 
 export interface ReactConfig {
     /**
