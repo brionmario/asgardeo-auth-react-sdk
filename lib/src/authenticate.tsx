@@ -90,8 +90,10 @@ const AuthProvider: FunctionComponent<PropsWithChildren<AuthProviderPropsInterfa
             params: Record<string, unknown>
         }
     ): Promise<BasicUserInfo> => {
+        console.log('Passed in config:::', _config);
+        const __config = await AuthClient.getConfigData();
+        console.log('Config from Storage:::', __config);
         try {
-            console.log('config', _config);
             setError(null);
             return await AuthClient.signIn(
                 dispatch,

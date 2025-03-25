@@ -67,6 +67,10 @@ class AuthAPI {
         console.log('Initializing:::', config);
         return this._client.initialize(config);
     }
+    
+    public async getConfigData(): Promise<AuthClientConfig<Config>> {
+        return (await this._client.getDataLayer()).getConfigData();
+    }
 
     /**
      * Method to handle user Sign In requests.
@@ -87,9 +91,6 @@ class AuthAPI {
             params: Record<string, unknown>
         }
     ): Promise<BasicUserInfo> {
-        const __config = (await this._client.getDataLayer()).getConfigData();
-        
-        console.log('Calling Sign In:::', __config);
         return this._client
             .signIn(config, authorizationCode, sessionState, authState, tokenRequestConfig)
             .then(async (response: BasicUserInfo) => {
