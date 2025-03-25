@@ -69,7 +69,7 @@ class AuthAPI {
     }
     
     public async getConfigData(): Promise<AuthClientConfig<Config>> {
-        return (await this._client.getDataLayer()).getConfigData();
+        return await this._client.getConfigData();
     }
 
     /**

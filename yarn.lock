@@ -1024,10 +1024,10 @@
     "@babel/helper-validator-identifier" "^7.19.1"
     to-fast-properties "^2.0.0"
 
-"@brionmario-experimental/asgardeo-auth-spa@^3.1.2":
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/@brionmario-experimental/asgardeo-auth-spa/-/asgardeo-auth-spa-3.1.2.tgz#76d52157ba4091bec7f7ddb72051836f9f6c77fd"
-  integrity sha512-FkGZl293j2gsjbofffuqjAoBI0kcEvkUC6n9ZapBGtC+KtR5hDsaq2EIxOosy0lrXFwHFJ3Xb9rYFuB4CcYquw==
+"@brionmario-experimental/asgardeo-auth-spa@^3.1.4":
+  version "3.1.4"
+  resolved "https://registry.yarnpkg.com/@brionmario-experimental/asgardeo-auth-spa/-/asgardeo-auth-spa-3.1.4.tgz#1be7d0ec246beb5bec294fc9fb56133ed247c481"
+  integrity sha512-qRQTcXIRTGD3BT08qR0BH01RgqnqjvcEJ7YIQtLnqLL4kXyK/No6TQg83ASdzQhR7ijGi/ib9Zdl93zuqMbZiw==
   dependencies:
     "@asgardeo/auth-js" "^5.1.0"
     await-semaphore "^0.1.3"
