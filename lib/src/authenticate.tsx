@@ -144,16 +144,29 @@ const AuthProvider: FunctionComponent<PropsWithChildren<AuthProviderPropsInterfa
     
     const [ error, setError ] = useState<AsgardeoAuthException>();
     const reRenderCheckRef: MutableRefObject<boolean> = useRef(false);
+    const reRenderCheckRef2: MutableRefObject<boolean> = useRef(false);
 
     useEffect(() => {
+        // React 18.x Strict.Mode has a new check for `Ensuring reusable state` to facilitate an upcoming react feature.
+        // https://reactjs.org/docs/strict-mode.html#ensuring-reusable-state
+        // This will remount all the useEffects to ensure that there are no unexpected side effects.
+        // When react remounts the signIn hook of the AuthProvider, it will cause a race condition. Hence, we have to
+        // prevent the re-render of this hook as suggested in the following discussion.
+        // https://github.com/reactwg/react-18/discussions/18#discussioncomment-795623
+        if (reRenderCheckRef2.current) {
+            return;
+        }
+
+        reRenderCheckRef2.current = true;
+
         if (state.isAuthenticated) {
             return;
         }
+
         (async () => {
             setInitialized(await AuthClient.init(_config));
             checkIsAuthenticated();
         })();
-
     }, [ _config ]);
 
     /**
