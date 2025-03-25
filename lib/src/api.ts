@@ -64,6 +64,7 @@ class AuthAPI {
      * @param {Config} config - `dispatch` function from React Auth Context.
      */
     public init(config: AuthClientConfig<Config>): Promise<boolean> {
+        console.log('Initializing:::', config);
         return this._client.initialize(config);
     }
 
@@ -86,6 +87,9 @@ class AuthAPI {
             params: Record<string, unknown>
         }
     ): Promise<BasicUserInfo> {
+        const __config = (await this._client.getDataLayer()).getConfigData();
+        
+        console.log('Calling Sign In:::', __config);
         return this._client
             .signIn(config, authorizationCode, sessionState, authState, tokenRequestConfig)
             .then(async (response: BasicUserInfo) => {
