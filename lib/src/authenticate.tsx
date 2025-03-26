@@ -289,7 +289,7 @@ const AuthProvider: FunctionComponent<PropsWithChildren<AuthProviderPropsInterfa
 
                 // Return unsubscribe function for cleanup
                 return () => {
-                    unsubscribeSignOut?.();
+                    // unsubscribeSignOut?.();
                 };
             } catch (error) {
                 console.error('Authentication process error:', error);
