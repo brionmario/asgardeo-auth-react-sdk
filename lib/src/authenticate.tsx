@@ -152,18 +152,44 @@ const AuthProvider: FunctionComponent<PropsWithChildren<AuthProviderPropsInterfa
     ) => AuthClient.trySignInSilently(state, dispatch, additionalParams, tokenRequestConfig);
     
     const [ error, setError ] = useState<AsgardeoAuthException>();
+    const initializationRef: MutableRefObject<boolean> = useRef(false);
     const reRenderCheckRef: MutableRefObject<boolean> = useRef(false);
 
     useEffect(() => {
-        if (state.isAuthenticated) {
+        // Only run if not already initialized
+        if (initializationRef.current) {
             return;
         }
-        (async () => {
-            setInitialized(await AuthClient.init(_config));
-            checkIsAuthenticated();
-        })();
 
-    }, [ _config ]);
+        // Prevent re-entry
+        initializationRef.current = true;
+
+        const initialize = async () => {
+            try {
+                // Check if already authenticated to potentially skip initialization
+                if (state.isAuthenticated) {
+                    return;
+                }
+
+                // Single, consolidated initialization
+                const initResult = await AuthClient.init(_config);
+                
+                setInitialized(initResult);
+                await checkIsAuthenticated();
+            } catch (error) {
+                console.error('Initialization failed:', error);
+                // Reset the ref to allow potential retry
+                initializationRef.current = false;
+            }
+        };
+
+        initialize();
+
+        // Cleanup to reset ref if component unmounts
+        return () => {
+            initializationRef.current = false;
+        };
+    }, [_config]);
 
     /**
      * Try signing in when the component is mounted.
