@@ -152,23 +152,55 @@ const AuthProvider: FunctionComponent<PropsWithChildren<AuthProviderPropsInterfa
     ) => AuthClient.trySignInSilently(state, dispatch, additionalParams, tokenRequestConfig);
     
     const [ error, setError ] = useState<AsgardeoAuthException>();
+    const initializationRef: MutableRefObject<boolean> = useRef(false);
     const reRenderCheckRef: MutableRefObject<boolean> = useRef(false);
 
     useEffect(() => {
+        // Prevent multiple initializations
+        if (initializationRef.current) {
+            return;
+        }
+    
+        // Mark as initialized to prevent re-runs
+        initializationRef.current = true;
+    
+        // Prevent initialization if already authenticated
         if (state.isAuthenticated) {
             return;
         }
-        (async () => {
-            setInitialized(await AuthClient.init(_config));
-            checkIsAuthenticated();
-        })();
-
-    }, [ _config ]);
+    
+        let isMounted = true;
+    
+        const initializeAuth = async () => {
+            try {
+                const initResult = await AuthClient.init(_config);
+    
+                if (isMounted) {
+                    setInitialized(initResult);
+                    await checkIsAuthenticated();
+                }
+            } catch (error) {
+                console.error('Authentication initialization failed:', error);
+            }
+        };
+    
+        initializeAuth();
+    
+        // Cleanup function
+        return () => {
+            isMounted = false;
+            initializationRef.current = false;
+        };
+    }, [_config]);
 
     /**
      * Try signing in when the component is mounted.
      */
     useEffect(() => {
+        // More robust handling of Strict Mode re-renders
+        const mountId = Math.random().toString(36).substring(7);
+        console.log(`AuthProvider mount: ${mountId}`);
+
         // React 18.x Strict.Mode has a new check for `Ensuring reusable state` to facilitate an upcoming react feature.
         // https://reactjs.org/docs/strict-mode.html#ensuring-reusable-state
         // This will remount all the useEffects to ensure that there are no unexpected side effects.
@@ -176,91 +208,101 @@ const AuthProvider: FunctionComponent<PropsWithChildren<AuthProviderPropsInterfa
         // prevent the re-render of this hook as suggested in the following discussion.
         // https://github.com/reactwg/react-18/discussions/18#discussioncomment-795623
         if (reRenderCheckRef.current) {
+            console.log(`Skipping re-render for mount: ${mountId}`);
             return;
         }
 
         reRenderCheckRef.current = true;
 
-        (async () => {
-            let isSignedOut: boolean = false;
-            // If the component was mounted after the user was redirected to the application upon a successful logout,
-            // then the locally stored user session will be cleared as a side effect of registering this sign-out hook.
-            await on(Hooks.SignOut, () => {
-                isSignedOut = true;
+        const performAuthentication = async () => {
+            try {
+                let isSignedOut = false;
 
-                if (onSignOut) {
-                    onSignOut();
-                }
-            });
+                // Register sign-out hook with proper error handling
+                const unsubscribeSignOut = await on(Hooks.SignOut, () => {
+                    isSignedOut = true;
+                    onSignOut?.();
+                });
 
-            // User is already authenticated. Skip...
-            if (state.isAuthenticated) {
-                return;
-            }
-
-            // If `skipRedirectCallback` is not true, check if the URL has `code` and `session_state` params.
-            // If so, initiate the sign in.
-            if (!_config.skipRedirectCallback) {
-                let authParams: AuthParams = null;
-                if (getAuthParams && typeof getAuthParams === "function") {
-                    authParams = await getAuthParams();
+                // Skip if already authenticated
+                if (state.isAuthenticated) {
+                    return;
                 }
 
-                const url = new URL(location.href);
+                // Handle redirect callback
+                if (!_config.skipRedirectCallback) {
+                    const authParams = getAuthParams 
+                        ? await getAuthParams() 
+                        : null;
 
-                if ((SPAUtils.hasAuthSearchParamsInURL()
-                    && new URL(url.origin + url.pathname).toString() === new URL(_config?.signInRedirectURL).toString())
-                    || authParams?.authorizationCode
-                    || url.searchParams.get("error") )
-                {
-                    try{
-                        await signIn(
-                            { callOnlyOnRedirect: true }, 
-                            authParams?.authorizationCode, 
-                            authParams?.sessionState,
-                            authParams?.state
-                        );
-                        setError(null);
-                    } catch(error) {
-                        if(error && Object.prototype.hasOwnProperty.call(error, "code")) {
-                            setError(error);
+                    const url = new URL(location.href);
+
+                    // More comprehensive redirect handling
+                    const shouldHandleRedirect = 
+                        SPAUtils.hasAuthSearchParamsInURL() ||
+                        (new URL(url.origin + url.pathname).toString() === 
+                        new URL(_config?.signInRedirectURL).toString()) ||
+                        authParams?.authorizationCode ||
+                        url.searchParams.get("error");
+
+                    if (shouldHandleRedirect) {
+                        try {
+                            await signIn(
+                                { callOnlyOnRedirect: true }, 
+                                authParams?.authorizationCode, 
+                                authParams?.sessionState,
+                                authParams?.state
+                            );
+                            setError(null);
+                        } catch (error) {
+                            if (error && Object.prototype.hasOwnProperty.call(error, "code")) {
+                                setError(error as AsgardeoAuthException);
+                            }
                         }
                     }
                 }
-            }
 
-            if (AuthClient.getState().isAuthenticated) {
-                return;
-            }
+                // Additional authentication checks
+                if (AuthClient.getState().isAuthenticated) {
+                    return;
+                }
 
-            if (!_config.disableAutoSignIn && await AuthClient.isSessionActive()) {
-                signIn();
-            }  
+                // Auto sign-in if session is active and not disabled
+                if (!_config.disableAutoSignIn && await AuthClient.isSessionActive()) {
+                    await signIn();
+                }  
 
-            if (_config.disableTrySignInSilently || isSignedOut) {
+                // Silent sign-in handling
+                if (!(_config.disableTrySignInSilently || isSignedOut)) {
+                    try {
+                        await trySignInSilently();
+                        setError(null);
+                    } catch (error) {
+                        if (error && Object.prototype.hasOwnProperty.call(error, "code")) {
+                            setError(error as AsgardeoAuthException);
+                        }
+                    }
+                }
+
+                // Ensure loading state is updated
                 dispatch({ ...state, isLoading: false });
 
-                return;
+                // Return unsubscribe function for cleanup
+                return () => {
+                    unsubscribeSignOut?.();
+                };
+            } catch (error) {
+                console.error('Authentication process error:', error);
+                dispatch({ ...state, isLoading: false });
             }
+        };
 
-            // This uses the RP iframe to get the session. Hence, will not work if 3rd party cookies are disabled.
-            // If the browser has these cookies disabled, we'll not be able to retrieve the session on refreshes.
-            await trySignInSilently()
-                .then(() => {
-                    // TODO: Add logs when a logger is available.
-                    // Tracked here https://github.com/asgardeo/asgardeo-auth-js-sdk/issues/151.
-                    setError(null);
-                })
-                .catch((error) => {
-                    // TODO: Add logs when a logger is available.
-                    // Tracked here https://github.com/asgardeo/asgardeo-auth-js-sdk/issues/151.
-                    if(error && Object.prototype.hasOwnProperty.call(error, "code")) {
-                        setError(error);
-                    }
-                });
-        })();
+        const cleanupPromise = performAuthentication();
 
-    }, [ _config ]);
+        return () => {
+            cleanupPromise.then(cleanup => cleanup?.());
+        };
+    }, [_config]);
 
     /**
      * Check if the user is authenticated and update the state.isAuthenticated value.
