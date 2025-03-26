@@ -165,7 +165,14 @@ const AuthProvider: FunctionComponent<PropsWithChildren<AuthProviderPropsInterfa
             return;
         }
         
-        console.log('REACT SDK:::authenticate.tsx -> useEffect Initialize')
+        console.log('REACT SDK:::authenticate.tsx -> useEffect Initialize');
+        
+        (async () => {
+            const ___config = await AuthClient.getConfigData();
+        
+            console.log('REACT SDK:::authenticate.tsx -> useEffect -> Config from AuthClient', ___config);
+        })();
+        
 
         const initAuth = async () => {
             try {
