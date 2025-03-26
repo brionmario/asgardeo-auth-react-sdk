@@ -171,28 +171,27 @@ const AuthProvider: FunctionComponent<PropsWithChildren<AuthProviderPropsInterfa
             const ___config = await AuthClient.getConfigData();
         
             console.log('REACT SDK:::authenticate.tsx -> useEffect -> Config from AuthClient', ___config);
+            
+            const initAuth = async () => {
+                try {
+                    // Mark as initializing to prevent re-entry
+                    initializationRef.current = true;
+    
+                    // Single initialization attempt
+                    await AuthClient.init(_config);
+    
+                    // Check and update authentication state
+                    await checkIsAuthenticated();
+                } catch (error) {
+                    console.error('Authentication initialization failed:', error);
+                    
+                    // Reset initialization flag on failure
+                    initializationRef.current = false;
+                }
+            };
+    
+            initAuth();
         })();
-        
-
-        const initAuth = async () => {
-            try {
-                // Mark as initializing to prevent re-entry
-                initializationRef.current = true;
-
-                // Single initialization attempt
-                await AuthClient.init(_config);
-
-                // Check and update authentication state
-                await checkIsAuthenticated();
-            } catch (error) {
-                console.error('Authentication initialization failed:', error);
-                
-                // Reset initialization flag on failure
-                initializationRef.current = false;
-            }
-        };
-
-        initAuth();
 
         // Cleanup to reset initialization flag
         return () => {

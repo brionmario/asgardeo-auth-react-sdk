@@ -1019,17 +1019,17 @@
     "@babel/helper-validator-identifier" "^7.19.1"
     to-fast-properties "^2.0.0"
 
-"@brionmario-experimental/asgardeo-auth-js@^5.2.2":
-  version "5.2.2"
-  resolved "https://registry.yarnpkg.com/@brionmario-experimental/asgardeo-auth-js/-/asgardeo-auth-js-5.2.2.tgz#dea73a7d1c2c52668fc1f1602fd6f30a1b9320a0"
-  integrity sha512-D+nEH0TePgHf8tl6nhboSNqQ1gd5nq+OG0Dej7o/uxpNKnPiwqNvJuodYCaDW/Nzlm+0oIuwP4ndBfbOJrcazw==
+"@brionmario-experimental/asgardeo-auth-js@^5.2.3":
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/@brionmario-experimental/asgardeo-auth-js/-/asgardeo-auth-js-5.2.3.tgz#9afe1bc7ff5d2295363792e553f5b8207b9b1bd7"
+  integrity sha512-OrOrFHFSBpYV6+MoUZSSSmv6qMPVPBsVcQKcRAzyzuGS5xyuPJbhMnf0PWHo+92gZjvWQb5CxLes0OcDbEbMdA==
 
-"@brionmario-experimental/asgardeo-auth-spa@^3.1.7":
-  version "3.1.7"
-  resolved "https://registry.yarnpkg.com/@brionmario-experimental/asgardeo-auth-spa/-/asgardeo-auth-spa-3.1.7.tgz#cd2035191b64744b2b2edf0b67afff2986d5525c"
-  integrity sha512-QH+0BKbQ+3cXu6G5SPRdEaeEHlfs502H7LmDX/nO7njoD/+cC77VPKQpWkDUt62Nkx0uMQKY4QY3Xh6PiEyGAg==
+"@brionmario-experimental/asgardeo-auth-spa@^3.1.8":
+  version "3.1.8"
+  resolved "https://registry.yarnpkg.com/@brionmario-experimental/asgardeo-auth-spa/-/asgardeo-auth-spa-3.1.8.tgz#d2489002a63cf33c7f5137aa623d35fc20fbcc21"
+  integrity sha512-m97l8F3wJDlcAB1ryfLy0csSv84pf/16qbWKA8QB2tM96oYLOJM6HdwahSy58h5cHXYdhGpiifemOLsPikDkAQ==
   dependencies:
-    "@brionmario-experimental/asgardeo-auth-js" "^5.2.2"
+    "@brionmario-experimental/asgardeo-auth-js" "^5.2.3"
     await-semaphore "^0.1.3"
     axios "^0.26.0"
     base64url "^3.0.1"
