@@ -160,6 +160,8 @@ const AuthProvider: FunctionComponent<PropsWithChildren<AuthProviderPropsInterfa
         if (initializationRef.current || state.isAuthenticated) {
             return;
         }
+        
+        console.log('REACT SDK:::authenticate.tsx -> useEffect Initialize')
 
         const initAuth = async () => {
             try {
