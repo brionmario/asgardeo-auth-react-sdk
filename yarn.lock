@@ -1024,10 +1024,10 @@
   resolved "https://registry.yarnpkg.com/@brionmario-experimental/asgardeo-auth-js/-/asgardeo-auth-js-5.2.8.tgz#11365c0a41a2d4ae147f28535d96d91359d87ffd"
   integrity sha512-jPvz3cCX+3Q42h1LsiCr58Qr1Jh8kgX3oC9jA7Iab/DrYJH8g5lAk31LT0ORO799XirC7Pg8HW6EQJtj4nMLjQ==
 
-"@brionmario-experimental/asgardeo-auth-spa@^3.1.12":
-  version "3.1.12"
-  resolved "https://registry.yarnpkg.com/@brionmario-experimental/asgardeo-auth-spa/-/asgardeo-auth-spa-3.1.12.tgz#060c64713ce97b19e5a6250aa357e41c3de93218"
-  integrity sha512-YvUGnonWJPb6GXmXUSFJSSMWvvAJXh3fOK1GQ6CkFdWNeJVEUQk7D32aEPL6JrErGFt3LcMIguh2OBT1upjnYA==
+"@brionmario-experimental/asgardeo-auth-spa@^3.1.13":
+  version "3.1.13"
+  resolved "https://registry.yarnpkg.com/@brionmario-experimental/asgardeo-auth-spa/-/asgardeo-auth-spa-3.1.13.tgz#b4dbcf9dfce2095f4e941a08cca3f4a30d965f7c"
+  integrity sha512-mbz7IWngNn5L3zatP2xfKcm9HKiW1E3FU6VaOwHY8ZHoi4o3gKd+8qdrIedePkC07/jZLOB34gZiwlIElWNP4w==
   dependencies:
     "@brionmario-experimental/asgardeo-auth-js" "^5.2.8"
     await-semaphore "^0.1.3"
