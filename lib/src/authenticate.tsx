@@ -160,44 +160,17 @@ const AuthProvider: FunctionComponent<PropsWithChildren<AuthProviderPropsInterfa
     }, []);
 
     useEffect(() => {
-        // Prevent multiple initializations
-        if (initializationRef.current || state.isAuthenticated) {
+        if (state.isAuthenticated) {
             return;
         }
-        
+
         console.log('REACT SDK:::authenticate.tsx -> useEffect Initialize');
-        
         (async () => {
-            const ___config = await AuthClient.getConfigData();
-        
-            console.log('REACT SDK:::authenticate.tsx -> useEffect -> Config from AuthClient', ___config);
-            
-            const initAuth = async () => {
-                try {
-                    // Mark as initializing to prevent re-entry
-                    initializationRef.current = true;
-    
-                    // Single initialization attempt
-                    await AuthClient.init(_config);
-    
-                    // Check and update authentication state
-                    await checkIsAuthenticated();
-                } catch (error) {
-                    console.error('Authentication initialization failed:', error);
-                    
-                    // Reset initialization flag on failure
-                    initializationRef.current = false;
-                }
-            };
-    
-            initAuth();
+            setInitialized(await AuthClient.init(_config));
+            checkIsAuthenticated();
         })();
 
-        // Cleanup to reset initialization flag
-        return () => {
-            initializationRef.current = false;
-        };
-    }, [_config]);
+    }, [ _config ]);
 
     /**
      * Try signing in when the component is mounted.
