@@ -154,6 +154,10 @@ const AuthProvider: FunctionComponent<PropsWithChildren<AuthProviderPropsInterfa
     const [ error, setError ] = useState<AsgardeoAuthException>();
     const initializationRef: MutableRefObject<boolean> = useRef(false);
     const reRenderCheckRef: MutableRefObject<boolean> = useRef(false);
+    
+    useEffect(() => {
+        console.log('REACT SDK:::authenticate.tsx -> AuthProvider mounted');
+    }, []);
 
     useEffect(() => {
         // Prevent multiple initializations
