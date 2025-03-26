@@ -156,36 +156,32 @@ const AuthProvider: FunctionComponent<PropsWithChildren<AuthProviderPropsInterfa
     const reRenderCheckRef: MutableRefObject<boolean> = useRef(false);
 
     useEffect(() => {
-        // Only run if not already initialized
-        if (initializationRef.current) {
+        // Prevent multiple initializations
+        if (initializationRef.current || state.isAuthenticated) {
             return;
         }
 
-        // Prevent re-entry
-        initializationRef.current = true;
-
-        const initialize = async () => {
+        const initAuth = async () => {
             try {
-                // Check if already authenticated to potentially skip initialization
-                if (state.isAuthenticated) {
-                    return;
-                }
+                // Mark as initializing to prevent re-entry
+                initializationRef.current = true;
 
-                // Single, consolidated initialization
-                const initResult = await AuthClient.init(_config);
-                
-                setInitialized(initResult);
+                // Single initialization attempt
+                await AuthClient.init(_config);
+
+                // Check and update authentication state
                 await checkIsAuthenticated();
             } catch (error) {
-                console.error('Initialization failed:', error);
-                // Reset the ref to allow potential retry
+                console.error('Authentication initialization failed:', error);
+                
+                // Reset initialization flag on failure
                 initializationRef.current = false;
             }
         };
 
-        initialize();
+        initAuth();
 
-        // Cleanup to reset ref if component unmounts
+        // Cleanup to reset initialization flag
         return () => {
             initializationRef.current = false;
         };
