@@ -6,8 +6,7 @@
     },
     "npmClient": "yarn",
     "packages": [
-        "lib",
-        "samples/*"
+        "lib"
     ],
     "version": "5.2.3",
     "useWorkspaces": true
