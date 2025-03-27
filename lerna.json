@@ -1,13 +1,13 @@
 {
-    "command": {
-        "version": {
-            "message": "[Asgardeo Release] [GitHub Actions] [Release %s] Bump version"
-        }
-    },
-    "npmClient": "yarn",
-    "packages": [
-        "lib"
-    ],
-    "version": "5.2.3",
-    "useWorkspaces": true
+  "command": {
+    "version": {
+      "message": "[Asgardeo Release] [GitHub Actions] [Release %s] Bump version"
+    }
+  },
+  "npmClient": "yarn",
+  "packages": [
+    "lib"
+  ],
+  "version": "5.3.0",
+  "useWorkspaces": true
 }
