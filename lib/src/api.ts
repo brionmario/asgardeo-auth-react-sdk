@@ -67,6 +67,10 @@ class AuthAPI {
         return await this._client.initialize(config);
     }
 
+    public async getConfigData(): Promise<AuthClientConfig<Config>> {
+        return await this._client.getConfigData();
+    }
+
     /**
      * Method to handle user Sign In requests.
      *
