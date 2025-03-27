@@ -1,4 +1,4 @@
-#  Copyright (c) 2020-2025, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#  Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 #  WSO2 Inc. licenses this file to you under the Apache License,
 #  Version 2.0 (the "License"); you may not use this file except
@@ -20,11 +20,6 @@ name: Release
 
 # Controls when the action will run.
 on:
-  # Triggers the workflow on push for the main branch.
-  push:
-    branches: [ main ]
-    paths-ignore:
-      - "LICENSE"
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
     inputs:
@@ -50,10 +45,9 @@ jobs:
       - uses: actions/checkout@v2
         with:
           token: ${{secrets.ASGARDIO_GITHUB_BOT_TOKEN}}
-        if: github.repository == 'asgardeo/asgardeo-auth-react-sdk'
+          fetch-depth: 0
 
       - uses: actions/checkout@v2
-        if: github.repository != 'asgardeo/asgardeo-auth-react-sdk'
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
@@ -64,48 +58,46 @@ jobs:
         run: |
           yarn build
 
-      - name: Setup Git User
+      - name: Bump Version
         run: |
+          git stash
           git config --global user.email "version.bump@github.action.com"
           git config --global user.name "asgardeo-github-bot"
+          yarn run bump-${{ github.event.inputs.Type }}-version
+          git push --follow-tags
 
-      - name: Create Release Pull Request or Publish
-        id: changesets
-        uses: changesets/action@v1
-        with:
-          publish: yarn publish:packages
-          version: yarn version:packages
-          commit: "[Asgardeo Release] [GitHub Actions]  Update package versions"
-          title: "[Release] [GitHub Action] Update package versions"
+      # - name: Pack Release Artifacts
+      #   run: |
+      #     mkdir artifacts
+      #     if test -d samples
+      #     then
+      #       cd samples
+      #       rm -rf **/node_modules/
+      #       rm -rf samples/**/dist/
+      #       rm -rf samples/asgardeo-choreo-react-express/apps/**/node_modules/
+      #       rm -rf samples/asgardeo-choreo-react-express/apps/client/build/
+      #       rm -rf samples/asgardeo-choreo-react-express/apps/server/dist/
+      #       for dir in */ ; do
+      #           zip -r "../artifacts/${dir%/}.zip" $dir
+      #       done
+      #     fi
+
+      # - name: Release Asgardeo Auth React SDK
+      #   run: |
+      #     version=`git describe --tags --abbrev=0`
+      #     echo ${{secrets.ASGARDIO_GITHUB_BOT_TOKEN}} | gh auth login --with-token
+      #     if test -d samples
+      #     then
+      #       gh release create $version artifacts/*
+      #     else
+      #       gh release create $version
+      #     fi
+
+      - name: Publish Asgardeo Auth React SDK
         env:
-          GITHUB_TOKEN: ${{ secrets.ASGARDIO_GITHUB_BOT_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Pack Release Artifacts
-        if: steps.changesets.outputs.hasChangesets == 'false'
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
         run: |
-          mkdir artifacts
-          if test -d samples
-          then
-            cd samples
-            rm -rf **/node_modules/
-            rm -rf samples/**/dist/
-            rm -rf samples/asgardeo-choreo-react-express/apps/**/node_modules/
-            rm -rf samples/asgardeo-choreo-react-express/apps/client/build/
-            rm -rf samples/asgardeo-choreo-react-express/apps/server/dist/
-            for dir in */ ; do
-                zip -r "../artifacts/${dir%/}.zip" $dir
-            done
-          fi
-
-      - name: Release Asgardeo Auth React SDK
-        if: steps.changesets.outputs.hasChangesets == 'false'
-        run: |
-          version=`git describe --tags --abbrev=0`
-          echo ${{secrets.ASGARDIO_GITHUB_BOT_TOKEN}} | gh auth login --with-token
-          if test -d samples
-          then
-            gh release create $version artifacts/*
-          else
-            gh release create $version
-          fi
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+          cp README.md lib
+          cd lib
+          npm publish --access public
