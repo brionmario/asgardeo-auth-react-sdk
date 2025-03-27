@@ -91,15 +91,6 @@ const AuthProvider: FunctionComponent<PropsWithChildren<AuthProviderPropsInterfa
         }
     ): Promise<BasicUserInfo> => {
         console.log('REACT SDK:::authenticate.tsx -> Passed in config', _config);
-        
-        const ___config = await AuthClient.getConfigData();
-        
-        console.log('REACT SDK:::authenticate.tsx -> Config from AuthClient', ___config);
-        
-        if (!___config || Object.keys(___config).length === 0) {
-            console.log('REACT SDK:::authenticate.tsx -> Config not found in storage. RInitializing...', _config);
-            await AuthClient.init(_config);
-        }
 
         try {
             setError(null);
