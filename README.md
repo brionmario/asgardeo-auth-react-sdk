@@ -101,7 +101,7 @@ Asgardeo Auth React SDK is built on top of [Asgardeo Auth SPA SDK](https://githu
 - Always import APIs from `@asgardeo/auth-react`.
 
 >**Warning**
->IDE or Editor auto import may sometimes import certain APIs from `@asgardeo/auth-spa`, change them back manually.
+>IDE or Editor auto import may sometimes import certain APIs from `@brionmario-experimental/asgardeo-auth-spa`, change them back manually.
 
 <details><summary><strong>Click here for Tips:</strong> Do's When importing a component from Asgardeo React SDK</summary>
 <p>

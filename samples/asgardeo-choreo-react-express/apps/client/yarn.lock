@@ -34,11 +34,11 @@
   resolved "https://registry.yarnpkg.com/@asgardeo/auth-react/-/auth-react-1.1.18.tgz#6493afb30131a67e9509c1aee88cc4ceb89d4eab"
   integrity sha512-ajFMiTw+O34aYIaEHsNYox/1X62u2sNJ2z3810Q6Y0/pD9UR+7ru16f/2Uh9b+nrOcYmlnaWRgY/S+PQhzDa9Q==
   dependencies:
-    "@asgardeo/auth-spa" "^0.4.8"
+    "@brionmario-experimental/asgardeo-auth-spa" "^0.4.8"
 
-"@asgardeo/auth-spa@^0.4.8":
+"@brionmario-experimental/asgardeo-auth-spa@^0.4.8":
   version "0.4.10"
-  resolved "https://registry.yarnpkg.com/@asgardeo/auth-spa/-/auth-spa-0.4.10.tgz#f680f4e1f1a67a105c7516c8041e0ae897a394f0"
+  resolved "https://registry.yarnpkg.com/@brionmario-experimental/asgardeo-auth-spa/-/auth-spa-0.4.10.tgz#f680f4e1f1a67a105c7516c8041e0ae897a394f0"
   integrity sha512-LUrOst+5f3ZOqOsFws6ZDWTm3WACSPdgQnKGGvYEQZbqsgnEAHDFxoWh/LKRAnCdWaNE6Q9/KXFzGf4uO9bK7Q==
   dependencies:
     "@asgardeo/auth-js" "^2.0.14"

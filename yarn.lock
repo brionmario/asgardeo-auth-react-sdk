@@ -15,6 +15,13 @@
   resolved "https://registry.yarnpkg.com/@asgardeo/auth-js/-/auth-js-5.1.1.tgz#aa7454224a3dd45fc85add3eb4d32229f30232d1"
   integrity sha512-yIgBKvHbt9ENczm2n3FGPET/Xf0I9H+Jm6oMXb8ClB/5m5qygHLoF3bsiDlzNuw3wuz8RH8F+waRudVI+IoLtQ==
 
+"@asgardeo/auth-react@^5.2.3":
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/@asgardeo/auth-react/-/auth-react-5.2.3.tgz#72e898e99a58f97515a2fd615feda331f6d985a5"
+  integrity sha512-j7j5wsVii8rGpnxn7veCutnJA8X9TwVYOQ+CLYt8aZC5HOCM4usriADjS5G+MROrfdb7kKEozKs1oJn5xfV3WQ==
+  dependencies:
+    "@asgardeo/auth-spa" "^3.1.4"
+
 "@asgardeo/auth-spa@^3.1.4":
   version "3.1.4"
   resolved "https://registry.yarnpkg.com/@asgardeo/auth-spa/-/auth-spa-3.1.4.tgz#0fc5c7d3484be43c0273d1a6a2cedbdaa7036400"
@@ -1037,6 +1044,20 @@
     "@babel/helper-string-parser" "^7.19.4"
     "@babel/helper-validator-identifier" "^7.19.1"
     to-fast-properties "^2.0.0"
+
+"@brionmario-experimental/asgardeo-auth-spa@^3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@brionmario-experimental/asgardeo-auth-spa/-/asgardeo-auth-spa-3.2.0.tgz#01b4f26ae59ad4b7eb7a44a62e3e81c529d2f1e0"
+  integrity sha512-Y1DnBkeBK8OnZ3eUEHbtPbpzm2cmi1e3XzwO07kS0K8N5hVF1BJ547R7Da6deAiRiHjsie3vSEi+EQFW5n99Jg==
+  dependencies:
+    "@asgardeo/auth-js" "^5.1.1"
+    await-semaphore "^0.1.3"
+    axios "^0.26.0"
+    base64url "^3.0.1"
+    buffer "^6.0.3"
+    fast-sha256 "^1.3.0"
+    jose "^4.5.1"
+    randombytes "^2.1.0"
 
 "@changesets/apply-release-plan@^7.0.8":
   version "7.0.8"

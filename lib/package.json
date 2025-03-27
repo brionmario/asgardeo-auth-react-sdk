@@ -1,5 +1,5 @@
 {
-    "name": "@asgardeo/auth-react",
+    "name": "@brionmario-experimental/asgardeo-auth-react",
     "version": "5.2.3",
     "description": "Asgardeo Auth React SDK for React Applications.",
     "keywords": [
@@ -44,7 +44,7 @@
         "LICENSE"
     ],
     "dependencies": {
-        "@asgardeo/auth-spa": "^3.1.4"
+        "@brionmario-experimental/asgardeo-auth-spa": "^3.2.0"
     },
     "devDependencies": {
         "@babel/cli": "^7.19.3",

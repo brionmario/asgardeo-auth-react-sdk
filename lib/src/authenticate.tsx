@@ -26,8 +26,8 @@ import {
     HttpRequestConfig,
     SPAUtils,
     SignInConfig
-} from "@asgardeo/auth-spa";
-import { SPACustomGrantConfig } from "@asgardeo/auth-spa/src/models/request-custom-grant";
+} from "@brionmario-experimental/asgardeo-auth-spa";
+import { SPACustomGrantConfig } from "@brionmario-experimental/asgardeo-auth-spa/src/models/request-custom-grant";
 import React, {
     FunctionComponent,
     MutableRefObject,
@@ -76,7 +76,7 @@ const AuthProvider: FunctionComponent<PropsWithChildren<AuthProviderPropsInterfa
     const [ state, dispatch ] = useState<AuthStateInterface>(AuthClient.getState());
     const [ initialized, setInitialized ] = useState(false);
 
-    const config = useMemo(
+    const mergedConfig = useMemo(
         (): AuthReactConfig => ({ ...defaultConfig, ...passedConfig }), [ passedConfig ]
     );
 
@@ -90,6 +90,12 @@ const AuthProvider: FunctionComponent<PropsWithChildren<AuthProviderPropsInterfa
             params: Record<string, unknown>
         }
     ): Promise<BasicUserInfo> => {
+        const _config = await AuthClient.getConfigData();
+
+        if (!_config || Object.keys(_config).length === 0) {
+            await AuthClient.init(mergedConfig);
+        }
+
         try {
             setError(null);
             return await AuthClient.signIn(
@@ -147,12 +153,12 @@ const AuthProvider: FunctionComponent<PropsWithChildren<AuthProviderPropsInterfa
         if (state.isAuthenticated) {
             return;
         }
+
         (async () => {
-            setInitialized(await AuthClient.init(config));
+            setInitialized(await AuthClient.init(mergedConfig));
             checkIsAuthenticated();
         })();
-
-    }, [ config ]);
+    }, [ mergedConfig ]);
 
     /**
      * Try signing in when the component is mounted.
@@ -189,7 +195,7 @@ const AuthProvider: FunctionComponent<PropsWithChildren<AuthProviderPropsInterfa
 
             // If `skipRedirectCallback` is not true, check if the URL has `code` and `session_state` params.
             // If so, initiate the sign in.
-            if (!config.skipRedirectCallback) {
+            if (!mergedConfig.skipRedirectCallback) {
                 let authParams: AuthParams = null;
                 if (getAuthParams && typeof getAuthParams === "function") {
                     authParams = await getAuthParams();
@@ -198,7 +204,7 @@ const AuthProvider: FunctionComponent<PropsWithChildren<AuthProviderPropsInterfa
                 const url = new URL(location.href);
 
                 if ((SPAUtils.hasAuthSearchParamsInURL()
-                    && new URL(url.origin + url.pathname).toString() === new URL(config?.signInRedirectURL).toString())
+                    && new URL(url.origin + url.pathname).toString() === new URL(mergedConfig?.signInRedirectURL).toString())
                     || authParams?.authorizationCode
                     || url.searchParams.get("error") )
                 {
@@ -222,11 +228,11 @@ const AuthProvider: FunctionComponent<PropsWithChildren<AuthProviderPropsInterfa
                 return;
             }
 
-            if (!config.disableAutoSignIn && await AuthClient.isSessionActive()) {
+            if (!mergedConfig.disableAutoSignIn && await AuthClient.isSessionActive()) {
                 signIn();
             }  
 
-            if (config.disableTrySignInSilently || isSignedOut) {
+            if (mergedConfig.disableTrySignInSilently || isSignedOut) {
                 dispatch({ ...state, isLoading: false });
 
                 return;
@@ -249,7 +255,7 @@ const AuthProvider: FunctionComponent<PropsWithChildren<AuthProviderPropsInterfa
                 });
         })();
 
-    }, [ config ]);
+    }, [ mergedConfig ]);
 
     /**
      * Check if the user is authenticated and update the state.isAuthenticated value.
